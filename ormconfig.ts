@@ -10,7 +10,7 @@ const config: PostgresConnectionOptions = {
     database:process.env.DB,
     ssl: false,
     entities: ['dist/src/**/*.entity{.js,.ts}'],
-    synchronize: true, // Only for development :)
+    synchronize: false, // Only for development :)
     migrations: ['dist/src/db/migrations/*{.js,.ts}'],
     cli: {
         migrationsDir: 'src/db/migrations'

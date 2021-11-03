@@ -36,6 +36,9 @@ $ npm install
 ## Running the app
 
 ```bash
+# before all
+Create db named Bikeramp
+
 # development
 $ npm run start
 
