@@ -38,7 +38,8 @@ $ npm install
 ```bash
 # before all
 Create db named Bikeramp
-
+then
+$ npm run migration:run
 # development
 $ npm run start
 
