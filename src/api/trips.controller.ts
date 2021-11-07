@@ -1,5 +1,7 @@
 import { HttpService } from '@nestjs/axios';
-import { Controller, Query, Post, Get } from '@nestjs/common';
+import { Controller, Post, Get, Body } from '@nestjs/common';
+import { Observable, Subscription } from 'rxjs';
+import { AddTripDto } from './dto/AddTripDto';
 import { TripModel } from './trip.model';
 import { TripsService } from './trips.service';
 
@@ -7,33 +9,31 @@ import { TripsService } from './trips.service';
 export class TripsController {
   constructor(
     private readonly tripsService: TripsService,
-    private httpService: HttpService,
+    private httpService: HttpService
   ) {}
 
   @Post('trips')
-  async addTrip(
-    @Query('start_address') start: string,
-    @Query('destination_address') destination: string,
-    @Query('price') price: number,
-    @Query('date') date: Date,
-  ) {
-    this.httpService
-        .get(process.env.API_URL +
-            '&destinations=' + destination +
-            '&origins=' + start +
-            '&key=' + process.env.API_KEY)
-        .subscribe((res) => {
-            let distance = +res.data.rows[0].elements[0].distance.text.replace('km','')
-            return this.tripsService.insertTrip(new TripModel(+distance,+price,date))
-        })
+  async addTrip(@Body() addTripDto: AddTripDto): Promise<Subscription> {
+    return this.httpService
+    .get(process.env.API_URL +
+        '&destinations=' + addTripDto.destination +
+        '&origins=' + addTripDto.start +
+        '&key=' + process.env.API_KEY)
+    .subscribe((res) => {
+        try {
+        let distance = +res.data.rows[0].elements[0].distance.text.replace('km','')
+        return this.tripsService.insertTrip(new TripModel(+distance,addTripDto.start,addTripDto.destination,+addTripDto.price,addTripDto.date))
+    } catch (e) {
+            console.log('error')
+        }
+    })
   }
-
   @Get('stats/weekly')
-  async getWeekly() {
-    return (await this.tripsService.getWeekly())[0]
-  }
-  @Get('stats/monthly')
-  async getMonthly() {
-    return (await this.tripsService.getMonthly())
-  }
+async getWeekly(): Promise<any> {
+  return (await this.tripsService.getWeekly())[0];
+}
+@Get('stats/monthly')
+async getMonthly(): Promise<any> {
+  return await this.tripsService.getMonthly();
+}
 }
