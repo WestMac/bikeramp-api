@@ -5,6 +5,7 @@ import { AddTripDto } from '../dto/AddTripDto';
 import { TripModel } from './trip.model';
 import { TripsService } from './trips.service';
 
+
 @Controller('api')
 export class TripsController {
   constructor(
@@ -16,15 +17,15 @@ export class TripsController {
   async addTrip(@Body() addTripDto: AddTripDto): Promise<Subscription> {
     return this.httpService
     .get(process.env.API_URL +
-        '&destinations=' + addTripDto.destination +
-        '&origins=' + addTripDto.start +
+        '&destinations=' + addTripDto.destination.normalize("NFD").replace(/\p{Diacritic}/gu, "") +
+        '&origins=' + addTripDto.start.normalize("NFD").replace(/\p{Diacritic}/gu, "") +
         '&key=' + process.env.API_KEY)
     .subscribe((res) => {
         try {
         let distance = +res.data.rows[0].elements[0].distance.text.replace('km','')
         return this.tripsService.insertTrip(new TripModel(+distance,addTripDto.start,addTripDto.destination,+addTripDto.price,addTripDto.date))
     } catch (e) {
-            console.log('error')
+        console.log('error')
         }
     })
   }

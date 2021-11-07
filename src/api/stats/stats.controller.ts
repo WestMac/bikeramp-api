@@ -9,12 +9,12 @@ export class StatsController {
     constructor(private readonly statsService: StatsService) {}
 
     @Get('stats/weekly')
-    async getWeekly(): Promise<any>     {
+    async getWeekly(): Promise<{}>     {
         return (await this.statsService.getWeekly())[0];
     }
 
     @Get('stats/monthly')
-    async getMonthly(): Promise<any> {
+    async getMonthly(): Promise<{}> {
         return await this.statsService.getMonthly();
     }
 }
