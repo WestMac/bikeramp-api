@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
-import { Controller, Post, Get, Body } from '@nestjs/common';
-import { Observable, Subscription } from 'rxjs';
-import { AddTripDto } from './dto/AddTripDto';
+import { Controller, Post, Body } from '@nestjs/common';
+import { Subscription } from 'rxjs';
+import { AddTripDto } from '../dto/AddTripDto';
 import { TripModel } from './trip.model';
 import { TripsService } from './trips.service';
 
@@ -28,12 +28,4 @@ export class TripsController {
         }
     })
   }
-  @Get('stats/weekly')
-async getWeekly(): Promise<any> {
-  return (await this.tripsService.getWeekly())[0];
-}
-@Get('stats/monthly')
-async getMonthly(): Promise<any> {
-  return await this.tripsService.getMonthly();
-}
 }
