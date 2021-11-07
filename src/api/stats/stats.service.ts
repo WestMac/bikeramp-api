@@ -1,25 +1,16 @@
-import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { TripModel } from './trip.model';
-import { InjectRepository } from '@nestjs/typeorm';
-import { HttpService } from '@nestjs/axios';
-import { getRepository, Repository } from 'typeorm';
-import { Trip } from './trip.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { getRepository, Repository } from "typeorm";
+import { Trip } from "../entities/trip.entity";
+
 
 @Injectable()
-export class TripsService {
-  constructor(
-    @InjectRepository(Trip) private tripRepository: Repository<Trip>,
-    private httpService: HttpService,
-  ) {}
+export class StatsService {
+   constructor( 
+       @InjectRepository(Trip) private tripRepository: Repository<Trip> 
+   ) {}
 
-  async insertTrip(TripModel: TripModel): Promise<Trip> {
-    console.log(TripModel)
-    const newTrip = this.tripRepository.create(TripModel);
-    console.log(newTrip)
-    return await this.tripRepository.save(newTrip);
-  }
-
-  async getWeekly() {
+   async getWeekly() {
     return await getRepository(Trip)
       .createQueryBuilder('trip')
       .select("SUM(trip.distance) || 'km'", 'total_distance')

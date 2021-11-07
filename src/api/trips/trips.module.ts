@@ -1,9 +1,11 @@
 import { Module } from "@nestjs/common";
-import { Trip } from "./trip.entity";
+import { Trip } from "../entities/trip.entity";
 import { TripsController } from "./trips.controller";
 import { TripsService } from "./trips.service";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HttpModule } from "@nestjs/axios";
+
+
 
 @Module({
     imports: [
