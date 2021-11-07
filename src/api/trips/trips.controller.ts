@@ -1,7 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { Controller, Post, Body } from '@nestjs/common';
-import { Subscription } from 'rxjs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Observable, Subscription } from 'rxjs';
+import { Repository } from 'typeorm';
 import { AddTripDto } from '../dto/AddTripDto';
+import { Trip } from '../entities/trip.entity';
 import { TripModel } from './trip.model';
 import { TripsService } from './trips.service';
 
@@ -9,24 +12,12 @@ import { TripsService } from './trips.service';
 @Controller('api')
 export class TripsController {
   constructor(
-    private readonly tripsService: TripsService,
-    private httpService: HttpService
+    @InjectRepository(Trip) private tripRepository: Repository<Trip>,
+    private readonly tripsService: TripsService
   ) {}
 
   @Post('trips')
-  async addTrip(@Body() addTripDto: AddTripDto): Promise<Subscription> {
-    return this.httpService
-    .get(process.env.API_URL +
-        '&destinations=' + addTripDto.destination.normalize("NFD").replace(/\p{Diacritic}/gu, "") +
-        '&origins=' + addTripDto.start.normalize("NFD").replace(/\p{Diacritic}/gu, "") +
-        '&key=' + process.env.API_KEY)
-    .subscribe((res) => {
-        try {
-        let distance = +res.data.rows[0].elements[0].distance.text.replace('km','')
-        return this.tripsService.insertTrip(new TripModel(+distance,addTripDto.start,addTripDto.destination,+addTripDto.price,addTripDto.date))
-    } catch (e) {
-        console.log('error')
-        }
-    })
+  async addTrip(@Body() addTripDto: AddTripDto) {
+    return await this.tripsService.insertTrip(addTripDto)
   }
 }
