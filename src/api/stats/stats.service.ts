@@ -16,6 +16,7 @@ export class StatsService {
       .select("SUM(trip.distance) || 'km'", 'total_distance')
       .addSelect("SUM(trip.price) || 'PLN'", 'total_price')
       .where("trip.createdAt >= date_trunc('week',current_date)")
+      .andWhere("trip.createdAt <= current_date + 1")
       .getRawMany();
   }
 
@@ -40,6 +41,7 @@ export class StatsService {
         'avg_price',
       )
       .where("trip.createdAt >= date_trunc('month',current_date)")
+      .andWhere("trip.createdAt <= current_date + 1")
       .getRawMany();
   }
 }

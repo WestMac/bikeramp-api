@@ -17,6 +17,6 @@ export class Trip {
     @Column({ name: 'price', type: 'decimal', precision: 6, scale: 2})
     price: number;
 
-    @Column()
+    @Column({ type: 'timestamptz' })
     createdAt: Date;
 }

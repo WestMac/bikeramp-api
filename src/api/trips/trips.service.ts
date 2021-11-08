@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Trip } from '../entities/trip.entity';
 import { HttpService } from '@nestjs/axios';
-import { map, Subscription } from 'rxjs';
+import { map } from 'rxjs';
 import { AddTripDto } from '../dto/AddTripDto';
 
 @Injectable()
